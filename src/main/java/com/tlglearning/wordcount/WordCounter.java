@@ -6,45 +6,42 @@ import java.util.Map;
 import java.util.Set;
 
 
-// final makes the class so it can't be extended.
-
-public final class WordCounter {
+public class WordCounter {
 
   // keys are strings and values are integers
   // final keyword promises a value during initialization or in a constructor, counts needs to be defined
-  private final Map<String, Integer> counts;
+  private final Map<String, Integer> counts = new HashMap<>();
 
-  public WordCounter(String text) {
-    String[] words = splitWords(text);
-    counts = Collections.unmodifiableMap(countWords(words));
-  }
+  // defaults to 0. fields have default values, variables do not.
+  private int totalWords;
 
   public Set<String> words() {
     return counts.keySet();
   }
 
-  public int getCount(String word) {
+  public int get(String word) {
     return counts.getOrDefault(word, 0);
   }
 
   public Map<String, Integer> getCounts() {
-    return counts;
+    return Collections.unmodifiableMap(counts);
   }
 
-  Map<String, Integer> countWords(String[] words) {
-    Map<String, Integer> counts = new HashMap<>();
-    for (String word : words) {
-      // DONE Check if word is already present as a key in counts
-      //  if it's not present, add it to counts with a value of 1
-      //  otherwise, get the current value, add 1 to it, and update the map with the new value.
-      if (!counts.containsKey(word)) {
-        counts.put(word, 1);
-      } else {
-        int previousCount = counts.get(word);
-        counts.put(word, previousCount + 1);
-      }
+  public void add(String text) {
+    String trimmedLine = text.trim();
+    if (!trimmedLine.isEmpty()) {
+      countWords(splitWords(trimmedLine));
     }
-    return counts;
+    //    String[] words = splitWords(text);
+    //    countWords(words);
+  }
+
+  public int size() {
+    return counts.size();
+  }
+
+  public int total() {
+    return totalWords;
   }
 
   @Override
@@ -58,5 +55,15 @@ public final class WordCounter {
         .toLowerCase()
         // split words to put into array (create an array of words)
         .split("[\\W_]+");
+  }
+
+  void countWords(String[] words) {
+    for (String word : words) {
+      // DONE Check if word is already present as a key in counts
+      //  if it's not present, add it to counts with a value of 1
+      //  otherwise, get the current value, add 1 to it, and update the map with the new value.
+      counts.put(word, get(word) + 1);
+      totalWords++;
+    }
   }
 }
