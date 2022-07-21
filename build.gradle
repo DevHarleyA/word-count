@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+// Step 1 : Add Java Version
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+group 'com.tlglearning'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+// Step 2 : Define a variable for our junitVersion to perform string interpolation
+dependencies {
+    // def stands for define, the system determines type based on the assignment
+    def junitVersion = '5.8.2'
+    // Step 3 : remove -api
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+}
+// Step 4 : Refresh Gradle
+test {
+    useJUnitPlatform()
+}
