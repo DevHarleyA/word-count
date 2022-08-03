@@ -1,5 +1,6 @@
 package com.tlglearning.wordcount;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,9 @@ import java.util.Set;
 
 public class WordCounter {
 
+  private static final String[] BORING_WORDS = {"and", "of", "the", "in", "on", "i", "then", "than",
+      "out", "to", "a", "that", "it", "he", "you", "was", "his", "is", "have", "had", "my", "we", "with",
+      "for", "which", "as", "but", "not", "at"};
   // keys are strings and values are integers
   // final keyword promises a value during initialization or in a constructor, counts needs to be defined
   private final Map<String, Integer> counts = new HashMap<>();
@@ -58,12 +62,13 @@ public class WordCounter {
   }
 
   void countWords(String[] words) {
-    for (String word : words) {
-      // DONE Check if word is already present as a key in counts
-      //  if it's not present, add it to counts with a value of 1
-      //  otherwise, get the current value, add 1 to it, and update the map with the new value.
-      counts.put(word, get(word) + 1);
-      totalWords++;
-    }
+    Arrays
+        .stream(words)
+        .map(String::trim)
+        .filter((s) -> !s.isEmpty())
+        .filter((s) -> s.length() > 5) // try filtering by length to get rid of common modern-day words
+        .filter((s) -> !Set.of(BORING_WORDS).contains(s)) // will filter out these common words
+        // .filter(Predicate.not(String::isEmpty))
+        .forEach((word) -> counts.put(word, 1 + counts.getOrDefault(word, 0))); // void return type, stream HAS TO finish
   }
 }

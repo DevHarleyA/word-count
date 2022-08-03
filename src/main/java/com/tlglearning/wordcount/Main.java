@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Main {
 
@@ -15,17 +18,24 @@ public class Main {
         InputStream input = Main.class.getClassLoader().getResourceAsStream(TEST_FILE_NAME);
         Reader reader = new InputStreamReader(input);
         BufferedReader buffer = new BufferedReader(reader);
-      ) {
-        WordCounter counter = new WordCounter();
-        String line;
-        while ((line = buffer.readLine()) != null) {
-          // TODO Pass line to a method of WordCounter.
-          counter.add(line);
-        }
-        // TODO Do something with the WordCounter.
-      System.out.println(counter);
+    ) {
+      WordCounter counter = new WordCounter();
+      String line;
+      while ((line = buffer.readLine()) != null) {
+        // TODO Pass line to a method of WordCounter.
+        counter.add(line);
       }
-    }
 
+      counter
+          .getCounts() // returns an unmodifiable map of String to Integer (word & # of times)
+          .entrySet() // returns a set of key value pairs
+          .stream()
+          .sorted(Comparator.comparing((Entry<String, Integer> entry) -> entry.getValue()).reversed())
+          .limit(10)
+          .forEach(System.out::println);
+
+    }
   }
+
+}
 
